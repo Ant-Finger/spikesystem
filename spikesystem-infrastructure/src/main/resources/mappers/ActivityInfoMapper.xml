@@ -162,4 +162,11 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+  <select id="queryAllEffectiveActivity" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_activity_info
+    where deleted = 0 and now() BETWEEN start_time AND end_time
+  </select>
 </mapper>

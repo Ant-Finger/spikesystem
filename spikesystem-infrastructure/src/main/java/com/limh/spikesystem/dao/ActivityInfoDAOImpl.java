@@ -8,6 +8,7 @@ import com.limh.spikesystem.mapper.ActivityInfoMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @Service
 public class ActivityInfoDAOImpl implements ActivityInfoDAO {
@@ -52,5 +53,10 @@ public class ActivityInfoDAOImpl implements ActivityInfoDAO {
     public int updateByPrimaryKey(ActivityInfoDTO activityInfoDTO) {
 
         return activityInfoMapper.updateByPrimaryKey(activityInfoConverter.dto2Po(activityInfoDTO));
+    }
+
+    @Override
+    public List<ActivityInfoDTO> queryAllEffectiveActivity() {
+        return activityInfoConverter.pos2Dtos(activityInfoMapper.queryAllEffectiveActivity());
     }
 }

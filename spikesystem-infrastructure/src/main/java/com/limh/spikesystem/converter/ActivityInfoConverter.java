@@ -22,6 +22,4 @@ public interface ActivityInfoConverter {
     ActivityInfoDTO po2Dto(ActivityInfoPO activityInfoPO);
 
     List<ActivityInfoDTO> pos2Dtos(List<ActivityInfoPO> activityInfoPOs);
-
-
 }
