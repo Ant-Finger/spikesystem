@@ -15,4 +15,20 @@ public interface ActivityInfoService {
      * @return
      */
    List<ActivityInfoDTO> queryAllEffectiveActivity();
+
+    boolean addActivityInfo(ActivityInfoDTO activityInfoDTO);
+
+    void deleteActivityInfo(Long activityId);
+
+    void deduceProductNums(Long activityId);
+
+    void increaseProductNums(Long activityId);
+
+    /**
+     * 活动是否已经发起了
+     *
+     * @param activityId
+     * @return
+     */
+    boolean activityValid(Long activityId);
 }
