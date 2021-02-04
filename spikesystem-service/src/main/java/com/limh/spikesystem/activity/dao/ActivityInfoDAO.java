@@ -58,4 +58,9 @@ public interface ActivityInfoDAO {
      * @return
      */
     List<ActivityInfoDTO> queryAllEffectiveActivity();
+
+    int deduceNumsByPrimaryKey(Long id);
+
+    int increaseNumsByPrimaryKey(Long id);
+
 }

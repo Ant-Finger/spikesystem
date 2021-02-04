@@ -5,6 +5,7 @@ import com.limh.spikesystem.activity.dto.ActivityInfoDTO;
 import com.limh.spikesystem.activity.service.ActivityInfoService;
 import com.limh.spikesystem.adapter.CacheAdapter;
 import com.limh.spikesystem.common.Constant;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -76,24 +77,59 @@ public class ActivityInfoServiceImpl implements ActivityInfoService {
         return true;
     }
 
-
+    /**
+     * 逻辑删除，防止意外删除后，数据无法找回
+     *
+     * @param activityId
+     */
     @Override
     public void deleteActivityInfo(Long activityId) {
+        ActivityInfoDTO activityInfoDTO = new ActivityInfoDTO();
+        activityInfoDTO.setId(activityId);
+        activityInfoDTO.setDeleted((byte) 1);
+        activityInfoDAO.updateByPrimaryKeySelective(activityInfoDTO);
 
+        //将活动商品数量从缓存中删除
+        cacheAdapter.del(Constant.REDIS_PREFIX_ACTIVITY_STOCK_NUMS + activityId);
+        //将活动时间从缓存中删除
+        cacheAdapter.del(Constant.REDIS_PREFIX_ACTIVITY_STOCK_STARTTIME + activityId);
     }
 
+    /**
+     * 活动产品库存减一
+     *
+     * @param activityId
+     */
     @Override
     public void deduceProductNums(Long activityId) {
+        int effectNums = activityInfoDAO.deduceNumsByPrimaryKey(activityId);
+        //如果返回0，则表示没有修改成功
+        if (effectNums == 0) {
+            return;
+        }
+        //缓存减一
+        //cacheAdapter.decrement(Constant.REDIS_PREFIX_ACTIVITY_STOCK_NUMS+activityId,1L);
 
     }
 
     @Override
     public void increaseProductNums(Long activityId) {
+        int effectNums = activityInfoDAO.increaseNumsByPrimaryKey(activityId);
+        //如果返回0，则表示没有修改成功。
+        if (effectNums == 0) {
+            return;
+        }
 
+        // 缓存加一
+        cacheAdapter.increaseOne(Constant.REDIS_PREFIX_ACTIVITY_STOCK_NUMS + activityId);
     }
 
     @Override
     public boolean activityValid(Long activityId) {
+        String value = cacheAdapter.get(Constant.REDIS_PREFIX_ACTIVITY_STOCK_STARTTIME + activityId);
+        if (StringUtils.isNotBlank(value)) {
+            return Long.valueOf(value).compareTo(System.currentTimeMillis()) <= 0;
+        }
         return false;
     }
 }

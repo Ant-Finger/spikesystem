@@ -59,4 +59,14 @@ public class ActivityInfoDAOImpl implements ActivityInfoDAO {
     public List<ActivityInfoDTO> queryAllEffectiveActivity() {
         return activityInfoConverter.pos2Dtos(activityInfoMapper.queryAllEffectiveActivity());
     }
+
+    @Override
+    public int deduceNumsByPrimaryKey(Long id) {
+        return activityInfoMapper.deduceNumsByPrimaryKey(id);
+    }
+
+    @Override
+    public int increaseNumsByPrimaryKey(Long id) {
+        return activityInfoMapper.increaseNumsByPrimaryKey(id);
+    }
 }

@@ -55,4 +55,9 @@ public interface ActivityInfoMapper {
     int updateByPrimaryKey(ActivityInfoPO record);
 
     List<ActivityInfoPO> queryAllEffectiveActivity();
+
+    int deduceNumsByPrimaryKey(Long id);
+
+
+    int increaseNumsByPrimaryKey(Long id);
 }
